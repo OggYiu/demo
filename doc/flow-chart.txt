@@ -1,0 +1,44 @@
+@startuml
+(*) --> "Main start"
+--> "Preloader"
+--> "MenuState"
+if "button" then
+    --> [play] "StageSelectState"
+    --> [choose] "PlayerSelectState"
+    if "choose" then
+        --> [true] "StageSelectState"
+        if "choose" then
+    	    partition GameplayState {
+                --> [true] "GameplayState"
+         	    --> "Connect to server, ask to create a game instance"
+        	    --> "waiting for response"
+        	    if "has response" then
+        	        --> [true] "Server send back map info"
+	                --> "Create all views"
+            		--> "Game loop"	  	
+	          		if "gameplay event received" then
+   	                    --> [true] "update game entities"
+                        --> "Game loop"
+         		    else
+         		        --> [false] "Game loop"
+         		    endif
+					
+					if "mouse / keyboard / gamepad input received"
+					    --> Send input event to server
+						--> "Game loop"
+					endif
+				else 
+				    -->[false] "waiting for response"
+				endif
+			}
+        else
+            --> [false] "PlayerSelectState"
+	    endif
+    else
+        --> [false] "MenuState"
+    endif
+	else
+        --> [option] "OptionState"
+		--> [back] "MenuState"
+	endif
+@enduml

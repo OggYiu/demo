@@ -1,0 +1,135 @@
+@startuml
+
+package ServerSide #EEEEEE {
+    class Model_Base {
+        entityId : Int
+    }
+
+    class Model_Character {
+        hp : Float
+        mp : Float
+        moveSpeed : Float
+        teamId : Int
+    }
+	
+    class Model_GameWorld {
+    }
+
+    class Model_GameMap {
+    }
+}
+
+package ClientSide #EEEEEE {
+    package HaxeFlixel {
+        class Main {
+    	}
+    	note top : Start Here
+
+        class FlxSprite {
+        }
+
+        class FlxState {
+        }
+
+		class FlxButton {
+		}
+    }
+
+    package View {
+        class View_Base {
+        }
+
+        class View_Character {
+            playAnim( animId : String ) : Void
+        }
+
+        class View_GameWorld {
+        }
+
+        class View_GameMap {
+        }
+    }
+
+    package State {
+        class MenuState {
+		    startBtn : FlxButton
+			optionBtn : FlxButton
+			
+			onStart : Void
+			onOption : Void
+        }
+
+        class GameplayState {
+			  viewGameWorld : View_GameWorld
+        }
+
+        class PlayerSelectionState {
+			  buttons : Array<Button>;			  
+        }
+    }
+
+    package Event {
+        class Event_Mouse {
+            position : Point
+        }
+
+        class Event_Keyboard {
+            keycode : Int
+        }
+    }
+
+    package Audio {
+        class AudioMgr {
+		    playSound( soundId : Int ) : Void
+			playMusic( path : String ) : Void
+			loadSound( path : String ) : Int
+    	}
+    }
+}
+
+package Share #DDDDDD {
+    class Event {
+        type : String
+
+    	new( type : String )
+        getType() : String
+    }
+
+    class EventDispatcher {
+    }
+
+    class EventListener {
+    }
+
+    class NetworkMgr {
+    }
+}
+
+' view
+FlxSprite <|-- View_Base
+View_Base <|-- View_Character
+View_Base <|-- View_GameMap
+View_Base <|-- View_GameWorld
+View_GameWorld *-- View_GameMap
+View_GameWorld *-- "*" View_Character
+View_Base *-- EventDispatcher
+
+' state
+FlxState <|-- MenuState
+FlxState <|-- GameplayState
+FlxState <|-- PlayerSelectionState
+GameplayState *-- View_GameWorld
+
+EventDispatcher - Event : use >
+NetworkMgr - EventDispatcher : use >
+
+Main *--- FlxState
+Main *--- EventDispatcher
+
+ClientSide --- NetworkMgr
+ServerSide --- NetworkMgr
+
+Event <|-- Event_Mouse
+Event <|-- Event_Keyboard
+
+@enduml

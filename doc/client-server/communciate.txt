@@ -1,0 +1,11 @@
+@startuml
+title : to move a character, method 1
+input -> game_client : left key
+game_client -> client_socket : move character left
+client_socket -> server_socket
+server_socket -> game_server
+game_server -> server_socket : confirm
+server_socket -> client_socket
+client_socket -> game_client
+game_clietn -> screen : character move to left
+@enduml
